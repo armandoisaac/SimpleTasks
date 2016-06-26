@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.diciannove.simpletasks.adapters.TaskViewAdapter;
-import com.diciannove.simpletasks.db.TaskRepository;
+import com.diciannove.simpletasks.sql.TaskRepository;
 import java.util.ArrayList;
 
 public final class MainActivity extends AppCompatActivity {
@@ -20,7 +20,6 @@ public final class MainActivity extends AppCompatActivity {
     private ListView lvItems;
 
     // repository
-    private final static String fileName = "todo.txt";
     private TaskRepository repository;
 
     @Override
@@ -31,15 +30,15 @@ public final class MainActivity extends AppCompatActivity {
         // repository
         repository = new TaskRepository(this);
 
-        lvItems = (ListView)findViewById(R.id.lvItems);
-        readItems();
+        lvItems = (ListView) findViewById(R.id.lvItems);
+        items = repository.getItems();
         itemsAdapter = new TaskViewAdapter(this, items);
         lvItems.setAdapter(itemsAdapter);
         setupListViewListener();
     }
 
-    protected void onAddItemClick(View v){
-        EditText etNewItem = (EditText)findViewById(R.id.etNewItem);
+    protected void onAddItemClick(View v) {
+        EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
 
         // Add the item to the adapter and insert to the db
@@ -51,12 +50,10 @@ public final class MainActivity extends AppCompatActivity {
         etNewItem.setText("");
     }
 
-    private void setupListViewListener(){
-        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+    private void setupListViewListener() {
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
-            {
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 SimpleTask item = items.get(position);
 
                 Intent intent = new Intent(MainActivity.this, EditToDo.class);
@@ -66,8 +63,8 @@ public final class MainActivity extends AppCompatActivity {
             }
         });
         lvItems.setOnItemLongClickListener(
-                new AdapterView.OnItemLongClickListener(){
-                    public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long id){
+                new AdapterView.OnItemLongClickListener() {
+                    public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long id) {
 
                         // Remove from the list and delete from the database
                         repository.remove(items.get(pos)._id);
@@ -77,7 +74,7 @@ public final class MainActivity extends AppCompatActivity {
                         itemsAdapter.notifyDataSetChanged();
                         return true;
                     }
-        }
+                }
         );
     }
 
@@ -85,11 +82,11 @@ public final class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
-                SimpleTask result = (SimpleTask)data.getSerializableExtra("com.diciannove.simpletasks.todo");
+            if (resultCode == Activity.RESULT_OK) {
+                SimpleTask result = (SimpleTask) data.getSerializableExtra("com.diciannove.simpletasks.todo");
                 int position = data.getIntExtra("com.diciannove.simpletasks.index", -1);
 
-                if(position > -1){
+                if (position > -1) {
                     items.set(position, result);
                     itemsAdapter.notifyDataSetChanged();
                     repository.update(result);
@@ -97,13 +94,4 @@ public final class MainActivity extends AppCompatActivity {
             }
         }
     }//onActivityResult
-
-
-    private void readItems(){
-        items = repository.getItems();
-    }
-
-    private void saveItems(){
-
-    }
 }

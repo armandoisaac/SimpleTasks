@@ -1,10 +1,11 @@
-package com.diciannove.simpletasks.db;
+package com.diciannove.simpletasks.sql;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.diciannove.simpletasks.SimpleTask;
+import com.diciannove.simpletasks.sql.ConnectionHelper;
 
 import java.util.ArrayList;
 
@@ -30,7 +31,6 @@ public class TaskRepository {
         ArrayList<SimpleTask> tasks = new ArrayList<SimpleTask>();
         Cursor bunnies = cupboard().withDatabase(db).query(SimpleTask.class).getCursor();
         try {
-            // Iterate Bunnys
             QueryResultIterable<SimpleTask> itr = cupboard().withCursor(bunnies).iterate(SimpleTask.class);
             for (SimpleTask task : itr) {
                 tasks.add(task);

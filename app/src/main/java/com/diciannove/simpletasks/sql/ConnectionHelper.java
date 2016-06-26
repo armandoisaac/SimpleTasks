@@ -1,5 +1,6 @@
-package com.diciannove.simpletasks.db;
+package com.diciannove.simpletasks.sql;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -14,7 +15,7 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class ConnectionHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "cupboardTest.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public ConnectionHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -40,6 +41,11 @@ public class ConnectionHelper extends SQLiteOpenHelper {
         cupboard().withDatabase(db).upgradeTables();
         // do migration work if you have an alteration to make to your schema here
 
+        if (newVersion == 2) {
+            ContentValues cv = new ContentValues();
+            cv.put("priority", 1);
+            cupboard().withDatabase(db).update(SimpleTask.class, cv);
+        }
     }
 
 }
