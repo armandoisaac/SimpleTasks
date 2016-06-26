@@ -10,6 +10,7 @@ import android.widget.EditText;
 public class EditToDo extends AppCompatActivity {
 
     private int _position;
+    private SimpleTask task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,20 +18,23 @@ public class EditToDo extends AppCompatActivity {
         setContentView(R.layout.activity_edit_to_do);
 
         Intent intent = getIntent();
-        String toDo = intent.getStringExtra("com.diciannove.simpletasks.todo");
+        task = (SimpleTask)intent.getSerializableExtra("com.diciannove.simpletasks.todo");
         _position = intent.getIntExtra("com.diciannove.simpletasks.index", -1);
 
         EditText textBox = (EditText)findViewById(R.id.etEditText);
-        textBox.setText(toDo);
+        textBox.setText(task.task);
     }
 
     protected void onSaveButtonClick(View v){
         EditText etNewItem = (EditText)findViewById(R.id.etEditText);
         String itemText = etNewItem.getText().toString();
 
+        // Update the values
+        task.task = itemText;
 
+        // Return the value
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("com.diciannove.simpletasks.todo", itemText);
+        returnIntent.putExtra("com.diciannove.simpletasks.todo", task);
         returnIntent.putExtra("com.diciannove.simpletasks.index", _position);
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
