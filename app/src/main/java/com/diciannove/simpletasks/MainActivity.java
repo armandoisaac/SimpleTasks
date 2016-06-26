@@ -20,7 +20,6 @@ public final class MainActivity extends AppCompatActivity {
     private ListView lvItems;
 
     // repository
-    private final static String fileName = "todo.txt";
     private TaskRepository repository;
 
     @Override
